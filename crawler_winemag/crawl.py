@@ -41,9 +41,17 @@ item = 0
 for category in categories:
     if category['value']:
         categories_list.append(category.text)
+
+category_lower_limit = -1
+category_upper_limit = 4
+
 try:
     for category in categories_list:
-        category = str(category).strip().replace(" ","%20")
+        if(category_lower_limit==category_upper_limit):
+            break
+        else:
+            category_lower_limit+=1
+        category = str(categories_list[category_lower_limit]).strip().replace(" ","%20")
         child_url = "https://www.winemag.com/?s=&search_type=reviews&drink_type=wine&varietal="+category
         response = getSoup(child_url)
         if response is not None:
@@ -110,7 +118,7 @@ try:
                                         json_file.write(",")
                                     json.dump(review_dict, json_file)
                                     item+=1
-                                    print str(item)+"    :::::::::::   "+str(wine_review_id)
+                                    print str(item)+"    :::::::::::   "+str(wine_review_id)+"    :::::::::::   " + category +"    :::::::::::   "+ str(page)
 
 
 except:
