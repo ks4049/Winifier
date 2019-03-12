@@ -43,8 +43,8 @@ item = 0
 for category in categories:
     if category['value']:
         categories_list.append(category.text)
-category_lower_limit = -1
-category_upper_limit = 4
+category_lower_limit = 4
+category_upper_limit = 9
 
 try:
     for category in categories_list:
@@ -59,19 +59,18 @@ try:
             reviews_counter = response.find("span",{'class':'results-count'})
             counter = None
             pages = None
-            print reviews_counter
-            if "," in reviews_counter.get_text():            
+            if "," in reviews_counter.get_text():
                 counter = reviews_counter.get_text().split(" ")[2].split(")")[0].split(",")
                 pages = int(math.ceil(float(counter[0]+counter[1])/20))
             else:
                 counter = reviews_counter.get_text().split(" ")[2].split(")")[0]
-                pages = int(math.ceil(float(counter)/20))                                     
+                pages = int(math.ceil(float(counter)/20))
             for page in range(1, pages):
                 targetUrl = "https://www.winemag.com/?s=&search_type=reviews&drink_type=wine&varietal="+category+"&page="+str(page)
                 reviews = getSoup(targetUrl)
                 if reviews is not None:
                     reviews_bag = reviews.find_all("a",{"class":"review-listing"})
-                    if reviews_bag is not None:                        
+                    if reviews_bag is not None:
                         for review_item in reviews_bag:
                             try:
                                 wine_review_link = review_item['href']
@@ -128,9 +127,9 @@ try:
                                         json.dump(review_dict, json_file)
                                         item+=1
                                         print str(item)+"    :::::::::::   "+str(wine_review_id)+"    :::::::::::   " + category +"    :::::::::::   "+ str(page)
-                            except:    
+                            except:
                                 traceback.print_exc()
-                                continue                                    
+                                continue
 
 except Exception as e:
     traceback.print_exc()
