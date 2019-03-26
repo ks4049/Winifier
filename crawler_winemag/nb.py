@@ -7,6 +7,7 @@ import json
 from train import beginTrain
 from test import *
 import math
+import datetime
 
 file =open("winemag-data_first150k.csv")
 reader = csv.reader(file)
@@ -33,7 +34,7 @@ def tokenize(str):
 	return dataX	           
 
 def createTraining():
-	trainLen = (int)(0.9*len(descriptionList))
+	trainLen = (int)(0.8*len(descriptionList))
 	for i in range(trainLen):
 		trainList =[]
 		trainList.append(descriptionList[i])
@@ -42,15 +43,13 @@ def createTraining():
 		trainingData.append(trainList)	
 
 def createTest():	
-	testLen = (int)(math.ceil(0.1*len(descriptionList)))
+	testLen = (int)(math.ceil(0.2*len(descriptionList)))
 	for i in range(len(descriptionList)-testLen, len(descriptionList)):
 		testList =[]
 		testList.append(descriptionList[i])
 		testList.append(pointsList[i])
 		testList.append(labelList[i])
-		testData.append(testList)
-	print "Test Data"
-	print testData
+		testData.append(testList)	
 		
 def getStopWords():
 	with open("stanford_core_nlp_stopWords.txt") as sw:
@@ -70,6 +69,10 @@ def removeStopWords(tokens):
 
 #stemmer = PorterStemmer()
 i=0
+
+positiveCount=0
+negativeCount=0
+startTime = datetime.datetime.now()
 readerList = list(reader)
 for row in readerList:
 	if i ==0:		
@@ -85,20 +88,26 @@ for row in readerList:
 	# 	print e	
 	descriptionList.append(pureTokens)
 	pointsList.append(row[4])
-	positive=0
-	if int(row[4]) >= 96:		
-		positive=1
+	if int(row[4]) > 90:		
+		positiveCount+=1
 		labelList.append("Positive")
-	else:		
+	else:	
+		negativeCount+=1	
 		labelList.append("Negative")
-	if i==10:
+	if i==1000:
 		break
 	i+=1		
 									
 createTraining()
 createTest()
-vocabDict, positiveProb, negativeProb = beginTrain(trainingData)
-print json.dumps(getResult(testData,vocabDict, positiveProb, negativeProb))
+vocabDict, positiveProb, negativeProb, featureSize = beginTrain(trainingData, positiveCount, negativeCount)
+predictedValues = getResult(testData,vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize)
+print json.dumps(predictedValues)
+formConfusionMatrix(testData, predictedValues)
+endTime = datetime.datetime.now()
+print
+print "Time taken"
+print endTime-startTime
 
 
 
