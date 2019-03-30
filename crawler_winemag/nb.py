@@ -1,19 +1,22 @@
 import csv
 import re
 import json
-#import nltk
-#from nltk.stem.porter import *
+import nltk
+from nltk.stem.porter import *
 import numpy as np
 from numpy import genfromtxt
 from train import beginTrain
 from test import *
 import math
 import datetime
+from train import Fraction
 '''
 file = open("winemag-data_first150k.csv")
 reader = csv.reader(file)
 '''
-
+print Fraction(5,35)
+print Fraction(28,70)
+print Fraction(70,15)
 csv = genfromtxt('data_temp_tab.txt',delimiter='~',dtype='<S')
 j=0
 #print(rat)
@@ -21,6 +24,7 @@ j=0
 for i in range(0,len(csv)):
 	if csv[i,1].item().decode()!="???":
 		csv[i,1].item().decode()
+
 descriptionList = []
 pointsList = []
 labelList = []
@@ -35,13 +39,16 @@ positiveProb=15
 vocabDict = {}
 
 
-def tokenize(str):
-	dataX = set()
+def tokenize(str, algorithm):
 	data = re.sub("[,.!?;:*()/%'\"]",'',str)
 	data =data.lower().split(" ")
-	for item in data:
-		dataX.add(item)
-	dataX = list(dataX)
+	if "Bernoulli" in algorithm:
+		dataX = set()
+		for item in data:
+			dataX.add(item)
+		dataX = list(dataX)
+	else:
+		dataX = data
 	return np.array(dataX)        
 
 def createTraining():
@@ -63,64 +70,62 @@ def createTest():
 		testData.append(testList)	
 		
 def getStopWords():
-	print(type(stopWords))
-	with open("stanford_core_nlp_stopWords.txt") as sw:
+	tempStopWords=""
+	with open("stanford_core_nlp_stopWords.txt", "r") as sw:		
+		sw = sw.readlines()	
 		for word in sw:
-			np.append(stopWords,word)
-	return stopWords
+			tempStopWords+=word
+	tempStopWords = re.sub("['\"]",'\n',tempStopWords)
+	stopList = tempStopWords.split("\n")
+	return np.array(stopList)
 
 def removeStopWords(tokens):
 	pureTokens = np.array([])
-	pureTokens = np.delete(tokens, stopWords)
+	pureTokens = np.setdiff1d(tokens, stopWords)
 	return pureTokens.tolist()
 
 
-#stemmer = PorterStemmer()
+
+stemmer = PorterStemmer()
 i=0
 
 positiveCount=0
 negativeCount=0
 startTime = datetime.datetime.now()
+algorithm = "Multinominal"
 #readerList = np.array(list(reader))
+stopWords = getStopWords()  #Getting stop words
 for row in csv:
 	if i ==0:		
 		i=1
 		continue
-	if('???' not in row[1]):			
-		tokenList = tokenize(row[1]) #Tokenization
-		stopWords = getStopWords()  #Getting stop words
-		#print(tokenList)
-		pureTokens =removeStopWords(tokenList)  #Removal of Stop Words
-		# try:
-		# 	stemmedTokens = [stemmer.stem(pureToken.decode('UTF-8')) for pureToken in pureTokens]
-		# 	stemmedTokens = [item.encode('ascii','ignore') for item in stemmedTokens]
-		# except Exception as e:
-		# 	print e	
-		descriptionList.append(pureTokens)
+	if('???' not in row[1]):
+		#Tokenization			
+		tokenList = tokenize(row[1], algorithm) 
+		#Removal of Stop Words
+		pureTokens =removeStopWords(tokenList)  
+		#Stemming
+	 	stemmedTokens = [stemmer.stem(pureToken.decode('UTF-8')) for pureToken in pureTokens]
+	 	stemmedTokens = [item.encode('ascii','ignore') for item in stemmedTokens]
+		descriptionList.append(stemmedTokens)
 		pointsList.append(row[0])
 		np.append(pointsList, row[0])
 		if int(row[0]) > 86:		
-			positiveCount+=1
 			labelList.append("Positive")
 		else:	
-			negativeCount+=1	
 			labelList.append("Negative")
 
-		#if i==50000:
-		#	break
+		if i==20000:
+			break
 		i+=1
-		print i		
 #descriptionList = descriptionList.tolist()
 #pointsList = pointsList.tolist()
 #labelList = labelList.tolist()
 
-
-
 createTraining()
 createTest()
-
-vocabDict, positiveProb, negativeProb, featureSize = beginTrain(trainingData, positiveCount, negativeCount)
-predictedValues = getResult(testData,vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize)
+vocabDict, positiveProb, negativeProb, featureSize, positiveCount, negativeCount = beginTrain(trainingData, algorithm)
+predictedValues = getResult(testData,vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm)
 print json.dumps(predictedValues)
 formConfusionMatrix(testData, predictedValues)
 endTime = datetime.datetime.now()

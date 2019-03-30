@@ -1,6 +1,8 @@
 import math
 
-def getResult(testData, vocabDict, positivePrior, negativePrior, positiveCount, negativeCount, featureSize):
+def getResult(testData, vocabDict, positivePrior, negativePrior, positiveCount, negativeCount, featureSize, algorithm):
+	print positivePrior
+	print negativePrior
 	testOutput = {}
 	print "Test data"
 	print testData
@@ -16,18 +18,19 @@ def getResult(testData, vocabDict, positivePrior, negativePrior, positiveCount, 
 				actualPos += math.log10(positiveProb)
 				negativeProb = vocabDict[key]["negativeProb"]
 				actualNeg += math.log10(negativeProb)
-			else:
+			elif "Bernoulli" in algorithm:				
 				nPositiveProb = vocabDict[key]["nPositiveProb"]
 				actualPos += math.log10(nPositiveProb)
 				nNegativeProb = vocabDict[key]["nNegativeProb"]		
 				actualNeg += math.log10(nNegativeProb)	
 		# handling new words
-		for word in row[0]:
-			if word not in vocabDict:
-				positiveProb = float(1)/(positiveCount+featureSize)
-				actualPos+=math.log10(positiveProb)	
-				negativeProb = float(1)/(negativeCount+featureSize)		
-				actualNeg+=math.log10(negativeProb)
+		if "Bernoulli" in algorithm:
+			for word in row[0]:
+				if word not in vocabDict:
+					positiveProb = float(1)/(positiveCount+featureSize)
+					actualPos+=math.log10(positiveProb)	
+					negativeProb = float(1)/(negativeCount+featureSize)		
+					actualNeg+=math.log10(negativeProb)
 		actualPos+=math.log10(positivePrior)
 		actualNeg+=math.log10(negativePrior)					
 		if(actualPos>actualNeg):
