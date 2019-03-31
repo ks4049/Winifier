@@ -16,7 +16,7 @@ def __init__(params):
     # Setup training options
     if process == PROCESS_TRAIN:
         algorithm = params[3]
-        check, dataset = load(filePath, 5000)
+        check, dataset = load(filePath, 50000)
         if check:
             trainType = params[4]
             if trainType == PS_TRAIN_TYPE:

@@ -29,12 +29,15 @@ def preprocess(dataset, algorithm):
                 return False, None, None, None
 
 def removeStopWords(tokens):
+    descriptionList = []
     print (STOPWORD_REMOVAL_BEGIN_MESSAGE)
     try:
-        pureTokens = np.array([])
-        pureTokens = np.setdiff1d(tokens, stopWords)
+        for instance in tokens:
+            pureTokens = np.array([])
+            pureTokens = np.setdiff1d(instance, stopWords)
+            descriptionList.append(pureTokens.tolist())
         print (STOPWORD_REMOVAL_SUCCESS_MESSAGE)
-        return True, pureTokens.tolist()
+        return True, descriptionList
     except:
         print (STOPWORD_REMOVAL_ERROR_MESSAGE)
         return False, None
@@ -44,11 +47,12 @@ def getLabelsAndPoints(dataset):
     labelList = []
     try:
         for row in dataset:
-            pointsList.append(row[1])
-            if int(row[1]) > 86:
-                labelList.append(POSITIVE_LABEL)
-            else :
-                labelList.append(NEGATIVE_LABEL)
+            if UNDEFINED_INSTANCE not in str(row[0]):
+                pointsList.append(row[1])
+                if int(row[1]) > 86:
+                    labelList.append(POSITIVE_LABEL)
+                else :
+                    labelList.append(NEGATIVE_LABEL)
         print(LABELLIST_SUCCESS_MESSAGE)
         return True, labelList, pointsList
     except:

@@ -9,5 +9,5 @@ def initialize(trainType, pureTokens, pointsList, labelList, trainPercentage, te
     if trainType == PS_TRAIN_TYPE:
         trainCheck = percentage_split(M_ALGORITHM, pureTokens, pointsList, labelList, trainPercentage, testPercentage)
     elif trainType == CV_TRAIN_TYPE:
-        trainCheck = cross_validation(M_ALGORITHM, trainPercentage, testPercentage)
+        trainCheck = cross_validation(B_ALGORITHM, pureTokens, pointsList, labelList, numberOfFolds)
     return True
