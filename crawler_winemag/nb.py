@@ -14,10 +14,8 @@ from train import Fraction
 file = open("winemag-data_first150k.csv")
 reader = csv.reader(file)
 '''
-print Fraction(5,35)
-print Fraction(28,70)
-print Fraction(70,15)
-csv = genfromtxt('data_temp_tab.txt',delimiter='~',dtype='<S')
+
+csv = genfromtxt('trainingV2.txt',delimiter='~',dtype='<S')
 j=0
 #print(rat)
 
@@ -37,7 +35,7 @@ vocabList = set()
 negativeProb=20
 positiveProb=15
 vocabDict = {}
-
+totalSize=0
 
 def tokenize(str, algorithm):
 	data = re.sub("[,.!?;:*()/%'\"]",'',str)
@@ -51,18 +49,22 @@ def tokenize(str, algorithm):
 		dataX = data
 	return np.array(dataX)        
 
-def createTraining():
-	trainLen = (int)(0.9*len(descriptionList))
-	for i in range(0, trainLen):
+def createTraining(lower, higher):	
+	for i in range(0, lower):
 		trainingList =[]
 		trainingList.append(descriptionList[i])
 		trainingList.append(pointsList[i])
 		trainingList.append(labelList[i])
 		trainingData.append(trainingList)
+	for i in range(higher, totalSize):
+		trainingList =[]
+		trainingList.append(descriptionList[i])
+		trainingList.append(pointsList[i])
+		trainingList.append(labelList[i])
+		trainingData.append(trainingList)	
 
-def createTest():	
-	testLen = (int)(math.ceil(0.1*len(descriptionList)))
-	for i in range(len(descriptionList)-testLen, len(descriptionList)):
+def createTest(lower, higher):		
+	for i in range(lower, higher):
 		testList =[]
 		testList.append(descriptionList[i])
 		testList.append(pointsList[i])
@@ -88,46 +90,57 @@ def removeStopWords(tokens):
 
 stemmer = PorterStemmer()
 i=0
-
+total_accuracy=0
 positiveCount=0
 negativeCount=0
 startTime = datetime.datetime.now()
-algorithm = "Multinominal"
+algorithm = "Bernoulli"
 #readerList = np.array(list(reader))
 stopWords = getStopWords()  #Getting stop words
 for row in csv:
 	if i ==0:		
 		i=1
 		continue
-	if('???' not in row[1]):
+	if('???' not in row[0]):
 		#Tokenization			
-		tokenList = tokenize(row[1], algorithm) 
+		tokenList = tokenize(row[0], algorithm) 
 		#Removal of Stop Words
 		pureTokens =removeStopWords(tokenList)  
 		#Stemming
 	 	stemmedTokens = [stemmer.stem(pureToken.decode('UTF-8')) for pureToken in pureTokens]
 	 	stemmedTokens = [item.encode('ascii','ignore') for item in stemmedTokens]
 		descriptionList.append(stemmedTokens)
-		pointsList.append(row[0])
-		np.append(pointsList, row[0])
-		if int(row[0]) > 86:		
+		pointsList.append(row[1])
+		np.append(pointsList, row[1])
+		if int(row[1]) > 86:		
 			labelList.append("Positive")
 		else:	
 			labelList.append("Negative")
 
-		if i==20000:
+		if i==50000:
 			break
 		i+=1
+		print i
 #descriptionList = descriptionList.tolist()
 #pointsList = pointsList.tolist()
 #labelList = labelList.tolist()
-
-createTraining()
-createTest()
-vocabDict, positiveProb, negativeProb, featureSize, positiveCount, negativeCount = beginTrain(trainingData, algorithm)
-predictedValues = getResult(testData,vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm)
-print json.dumps(predictedValues)
-formConfusionMatrix(testData, predictedValues)
+totalSize = 50000
+_slice_=1
+fold=10
+for _slice_ in range(1,fold+1):
+	testLen = (totalSize)/fold
+	lower = testLen*(_slice_-1)
+	higher = testLen*_slice_		
+	createTraining(lower, higher)
+	createTest(lower, higher)
+	vocabDict, positiveProb, negativeProb, featureSize, positiveCount, negativeCount = beginTrain(trainingData, algorithm)	
+	predictedValues = getResult(testData,vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm)
+	print json.dumps(predictedValues)
+	print "Slice"
+	print _slice_
+	total_accuracy +=formConfusionMatrix(testData, predictedValues)
+	_slice_+=1
+print float(total_accuracy)/fold
 endTime = datetime.datetime.now()
 print
 print "Time taken"

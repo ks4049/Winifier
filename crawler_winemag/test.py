@@ -59,12 +59,8 @@ def formConfusionMatrix(testData, predictedValues):
 				confusionDict["false"]["positive"]+=1
 			else:
 				confusionDict["false"]["negative"]+=1
-	print "Accuracy"
-	print float(confusionDict["true"]["positive"]+confusionDict["true"]["negative"])/(confusionDict["true"]["positive"]+confusionDict["true"]["negative"]+confusionDict["false"]["positive"]+confusionDict["false"]["negative"])
-	print "confusion matrix"
-	print
 	print confusionDict
-	return confusionDict
+	return float(confusionDict["true"]["positive"]+confusionDict["true"]["negative"])/(confusionDict["true"]["positive"]+confusionDict["true"]["negative"]+confusionDict["false"]["positive"]+confusionDict["false"]["negative"])	
 
 def initializeConfusionDict():
 	confusionDict = {"true": {"positive":0, "negative":0}, "false": {"positive":0, "negative":0}}
