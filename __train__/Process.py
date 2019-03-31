@@ -34,10 +34,12 @@ def createTestingCV(lower, higher, descriptionList, pointsList, labelList):
     return testData
 
 def cross_validation(algorithm, pureTokens, pointsList, labelList, folds):
+    finalVocabDict={}
     trainingData = []
     testingData = []
     _slice_ = 1
     totalAccuracy = 0
+    datasetSize = len(pureTokens)
     for _slice_ in range(1, folds + 1):
         print("---------------"+str(_slice_)+"----------------")
         testLen = int(len(pointsList) / folds)
@@ -46,15 +48,18 @@ def cross_validation(algorithm, pureTokens, pointsList, labelList, folds):
         trainingData = createTrainingCV(lower, higher, len(pureTokens), pureTokens, pointsList, labelList)
         testingData = createTestingCV(lower, higher, pureTokens, pointsList, labelList)
         vocabDict, positiveProb, negativeProb, featureSize, positiveCount, negativeCount = beginTrainingProcess(trainingData, algorithm)
+        finalVocabDict[_slice_]=vocabDict
         predictedValues = evaluate(testingData, vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm)
         totalAccuracy += formConfusionMatrix(testingData, predictedValues)
         _slice_ += 1
     print (float(totalAccuracy) / folds)
+    createModel(algorithm, CV_TRAIN_TYPE, finalVocabDict, folds, datasetSize)
     return True
 
 def percentage_split(algorithm, pureTokens, pointsList, labelList, trainingPercentage, testPercentage):
     trainingData = []
     testingData = []
+    datasetSize = len(pureTokens)
     counter = int(len(pureTokens) * float(trainingPercentage)/100)
     print(PERCENTAGE_SPLIT_BEGIN_MESSAGE)
     # splitting data to get training set
@@ -77,6 +82,7 @@ def percentage_split(algorithm, pureTokens, pointsList, labelList, trainingPerce
         vocabDict, positiveProb, negativeProb, featureSize, positiveCount, negativeCount = beginTrainingProcess(trainingData, algorithm)
         predictedValues = evaluate(testingData,vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm)
         totalAccuracy = formConfusionMatrix(testingData, predictedValues)
+        createModel(algorithm, PS_TRAIN_TYPE, vocabDict, trainingPercentage, datasetSize)
         print (totalAccuracy)
         return True
     except Exception as e:
@@ -84,15 +90,23 @@ def percentage_split(algorithm, pureTokens, pointsList, labelList, trainingPerce
         print(PERCENTAGE_SPLIT_ERROR_MESSAGE)
         return False
 
-'''
-def createModel(algorithm, trainType, wordDict, folds, trainingPercentage):
+
+def createModel(algorithm, trainType, wordDict, splitFold, datasetSize):
     print(CREATING_MODEL_MESSAGE)
     try:
         modelDictionary={
-        "algorithm":algorithm,
-        "trainType":trainType,
-        "values":wordDict
-        }
-        with open(algorithm+"--"+trainType+".json","w") as file:
-            json.dump(wordDict, file)
-'''
+        "algorithm":str(algorithm),
+        "trainType":str(trainType),                        
+        "vocabSize": str(len(wordDict)),
+        "datasetSize": str(datasetSize),               
+        }        
+        if trainType==PS_TRAIN_TYPE:
+            modelDictionary["percentageSplit"]=str(splitFold)
+        else:
+            modelDictionary["numberOfFolds"] = str(splitFold)            
+        modelDictionary["probability"]=str(wordDict)    
+        with open(str(algorithm)+"__"+str(trainType)+"__"+str(splitFold)+".json","w") as file:
+            json.dump(modelDictionary, file)
+    except Exception as e:
+        print(e)
+        print("Model not created")                

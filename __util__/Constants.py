@@ -41,3 +41,5 @@ PERCENTAGE_SPLIT_ERROR_MESSAGE = "Error in percentage split wise training"
 TRAINING_ERROR_MESSAGE = "Unable to perform training"
 BEGIN_TRAINING_MESSAGE = "Started Training Process ... "
 TRAINING_SUCCESS_MESSAGE = "Training Process Executed"
+CREATING_MODEL_MESSAGE = "Making model ..."
+
