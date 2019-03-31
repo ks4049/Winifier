@@ -1,0 +1,69 @@
+import sys
+sys.path.insert(0, './__util__')
+from Constants import *
+sys.path.insert(0, './__model__')
+from Validate import modelParser
+from numpy import genfromtxt as GFT
+import json
+import re
+import numpy as np
+
+dataset = None
+testDataset = None
+model = None
+
+def load(filePath, limit, delimiter="~"):
+    print (LOADING_DATASET_MESSAGE)
+    try:
+        dataset = GFT(filePath,delimiter=delimiter,dtype='<S', max_rows=limit)
+        for item in range(0,limit):
+        	if dataset[item,1].item().decode()!="???":
+        		dataset[item,1].item().decode()
+        print (LOADING_DATASET_SUCCESSFUL_MESSAGE)
+        print (str(len(dataset))+" Records Loaded")
+        return True, dataset
+    except:
+        print (TRAIN_DATA_LOAD_ERROR_MESSAGE)
+        return False, None
+
+def loadTestData(filePath, delimiter="~"):
+    print (LOADING_DATASET_MESSAGE)
+    try:
+        testDataset = GFT(filePath,delimiter=delimiter,dtype='<S')
+        print (LOADING_DATASET_SUCCESSFUL_MESSAGE)
+        print (str(len(testDataset))+" Records Loaded")
+        return True
+    except:
+        print (TEST_DATA_LOAD_ERROR_MESSAGE)
+        return False
+
+def loadModel(filePath):
+    print (LOADING_MODEL_MESSAGE)
+    try:
+        with open(filePath, "r") as modelData:
+            model = json.load(modelData)
+            if modelParser(model):
+                print (LOADING_MODEL_SUCCESSFUL_MESSAGE)
+                return True
+            else:
+                print (MODEL_LOAD_ERROR_MESSAGE)
+                return False
+    except:
+        print (MODEL_LOAD_ERROR_MESSAGE)
+        return False
+
+def loadStopWords(filePath):
+    print(LOADING_STOPWORDS_MESSAGE)
+    tStopWords = ""
+    try:
+        with open(filePath, "r") as sw:
+            sw = sw.readlines()
+            for word in sw:
+                tStopWords += word
+        tStopWords = re.sub("['\"]", '\n', tStopWords)
+        stopList = tStopWords.split("\n")
+        print(LOADING_STOPWORDS_SUCCESSFUL_MESSAGE)
+        return True, np.array(stopList)
+    except:
+        print(LOADING_STOPWORDS_ERROR_MESSAGE)
+        return False, None

@@ -47,9 +47,9 @@ def tokenize(str, algorithm):
 		dataX = list(dataX)
 	else:
 		dataX = data
-	return np.array(dataX)        
+	return np.array(dataX)
 
-def createTraining(lower, higher):	
+def createTraining(lower, higher):
 	for i in range(0, lower):
 		trainingList =[]
 		trainingList.append(descriptionList[i])
@@ -61,20 +61,20 @@ def createTraining(lower, higher):
 		trainingList.append(descriptionList[i])
 		trainingList.append(pointsList[i])
 		trainingList.append(labelList[i])
-		trainingData.append(trainingList)	
+		trainingData.append(trainingList)
 
-def createTest(lower, higher):		
+def createTest(lower, higher):
 	for i in range(lower, higher):
 		testList =[]
 		testList.append(descriptionList[i])
 		testList.append(pointsList[i])
 		testList.append(labelList[i])
-		testData.append(testList)	
-		
+		testData.append(testList)
+
 def getStopWords():
 	tempStopWords=""
-	with open("stanford_core_nlp_stopWords.txt", "r") as sw:		
-		sw = sw.readlines()	
+	with open("stanford_core_nlp_stopWords.txt", "r") as sw:
+		sw = sw.readlines()
 		for word in sw:
 			tempStopWords+=word
 	tempStopWords = re.sub("['\"]",'\n',tempStopWords)
@@ -87,7 +87,6 @@ def removeStopWords(tokens):
 	return pureTokens.tolist()
 
 
-
 stemmer = PorterStemmer()
 i=0
 total_accuracy=0
@@ -98,23 +97,23 @@ algorithm = "Bernoulli"
 #readerList = np.array(list(reader))
 stopWords = getStopWords()  #Getting stop words
 for row in csv:
-	if i ==0:		
+	if i ==0:
 		i=1
 		continue
 	if('???' not in row[0]):
-		#Tokenization			
-		tokenList = tokenize(row[0], algorithm) 
+		#Tokenization
+		tokenList = tokenize(row[0], algorithm)
 		#Removal of Stop Words
-		pureTokens =removeStopWords(tokenList)  
+		pureTokens =removeStopWords(tokenList)
 		#Stemming
 	 	stemmedTokens = [stemmer.stem(pureToken.decode('UTF-8')) for pureToken in pureTokens]
 	 	stemmedTokens = [item.encode('ascii','ignore') for item in stemmedTokens]
 		descriptionList.append(stemmedTokens)
 		pointsList.append(row[1])
 		np.append(pointsList, row[1])
-		if int(row[1]) > 86:		
+		if int(row[1]) > 86:
 			labelList.append("Positive")
-		else:	
+		else:
 			labelList.append("Negative")
 
 		if i==50000:
@@ -130,10 +129,10 @@ fold=10
 for _slice_ in range(1,fold+1):
 	testLen = (totalSize)/fold
 	lower = testLen*(_slice_-1)
-	higher = testLen*_slice_		
+	higher = testLen*_slice_
 	createTraining(lower, higher)
 	createTest(lower, higher)
-	vocabDict, positiveProb, negativeProb, featureSize, positiveCount, negativeCount = beginTrain(trainingData, algorithm)	
+	vocabDict, positiveProb, negativeProb, featureSize, positiveCount, negativeCount = beginTrain(trainingData, algorithm)
 	predictedValues = getResult(testData,vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm)
 	print json.dumps(predictedValues)
 	print "Slice"
@@ -145,5 +144,3 @@ endTime = datetime.datetime.now()
 print
 print "Time taken"
 print endTime-startTime
-
-
