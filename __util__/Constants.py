@@ -42,4 +42,6 @@ TRAINING_ERROR_MESSAGE = "Unable to perform training"
 BEGIN_TRAINING_MESSAGE = "Started Training Process ... "
 TRAINING_SUCCESS_MESSAGE = "Training Process Executed"
 CREATING_MODEL_MESSAGE = "Making model ..."
-
+MODEL_NOT_CREATED_MESSAGE = "Model file not generated"
+MODEL_CREATED_MESSAGE = "Model file generated"
+DISTRIBUTION_INVALID = "Invalid Distribution of Data"

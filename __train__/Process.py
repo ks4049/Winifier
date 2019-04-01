@@ -80,13 +80,13 @@ def percentage_split(algorithm, pureTokens, pointsList, labelList, trainingPerce
             testingData.append(testList)
 
         vocabDict, positiveProb, negativeProb, featureSize, positiveCount, negativeCount = beginTrainingProcess(trainingData, algorithm)
+        print(TRAINING_SUCCESS_MESSAGE)
         predictedValues = evaluate(testingData,vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm)
         totalAccuracy = formConfusionMatrix(testingData, predictedValues)
         createModel(algorithm, PS_TRAIN_TYPE, vocabDict, trainingPercentage, datasetSize)
         print (totalAccuracy)
         return True
-    except Exception as e:
-        print(e)
+    except:
         print(PERCENTAGE_SPLIT_ERROR_MESSAGE)
         return False
 
@@ -96,17 +96,18 @@ def createModel(algorithm, trainType, wordDict, splitFold, datasetSize):
     try:
         modelDictionary={
         "algorithm":str(algorithm),
-        "trainType":str(trainType),                        
-        "vocabSize": str(len(wordDict)),
-        "datasetSize": str(datasetSize),               
-        }        
+        "trainType":str(trainType),
+        "trainDatasetSize": str(datasetSize),
+        }
         if trainType==PS_TRAIN_TYPE:
             modelDictionary["percentageSplit"]=str(splitFold)
+            modelDictionary["vocabSize"]=str(len(wordDict)),
+
         else:
-            modelDictionary["numberOfFolds"] = str(splitFold)            
-        modelDictionary["probability"]=str(wordDict)    
-        with open(str(algorithm)+"__"+str(trainType)+"__"+str(splitFold)+".json","w") as file:
+            modelDictionary["numberOfFolds"] = str(splitFold)
+        modelDictionary["probability"]=str(wordDict)
+        with open("./__model__/generated/"+str(algorithm)+"__"+str(trainType)+"__"+str(splitFold)+".json","w") as file:
             json.dump(modelDictionary, file)
-    except Exception as e:
-        print(e)
-        print("Model not created")                
+        print(MODEL_CREATED_MESSAGE)
+    except:
+        print(MODEL_NOT_CREATED_MESSAGE)

@@ -15,7 +15,10 @@ model = None
 def load(filePath, limit, delimiter="~"):
     print (LOADING_DATASET_MESSAGE)
     try:
-        dataset = GFT(filePath,delimiter=delimiter,dtype='<S', max_rows=limit)
+        if limit == -1:
+            dataset = GFT(filePath,delimiter=delimiter,dtype='<S')
+        else:
+            dataset = GFT(filePath,delimiter=delimiter,dtype='<S', max_rows=limit)
         for item in range(0,limit):
         	if dataset[item,1].item().decode()!="???":
         		dataset[item,1].item().decode()

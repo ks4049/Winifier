@@ -49,7 +49,7 @@ def getLabelsAndPoints(dataset):
         for row in dataset:
             if UNDEFINED_INSTANCE not in str(row[0]):
                 pointsList.append(row[1])
-                if int(row[1]) > 86:
+                if int(row[1]) > 88:
                     labelList.append(POSITIVE_LABEL)
                 else :
                     labelList.append(NEGATIVE_LABEL)

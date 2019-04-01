@@ -4,45 +4,48 @@ sys.path.insert(0, './__util__')
 from Constants import *
 
 def evaluate(testData, vocabDict, positivePrior, negativePrior, positiveCount, negativeCount, featureSize, algorithm):
-	testOutput = {}
-	counter=0
-	for row in testData:
-		actualPos = 0
-		actualNeg = 0
-		# pass through the dictionary
-		for key in vocabDict:
-			label = None
-			if key in row[0]:
-				positiveProb= vocabDict[key]["positiveProb"]
-				actualPos += math.log10(positiveProb)
-				negativeProb = vocabDict[key]["negativeProb"]
-				actualNeg += math.log10(negativeProb)
-			elif B_ALGORITHM in algorithm:
-				nPositiveProb = vocabDict[key]["nPositiveProb"]
-				actualPos += math.log10(nPositiveProb)
-				nNegativeProb = vocabDict[key]["nNegativeProb"]
-				actualNeg += math.log10(nNegativeProb)
-		# handling new words
-		if B_ALGORITHM in algorithm:
-			for word in row[0]:
-				if word not in vocabDict:
-					positiveProb = float(1)/(positiveCount+featureSize)
-					actualPos+=math.log10(positiveProb)
-					negativeProb = float(1)/(negativeCount+featureSize)
-					actualNeg+=math.log10(negativeProb)
-		actualPos+=math.log10(positivePrior)
-		actualNeg+=math.log10(negativePrior)
-		if(actualPos>actualNeg):
-			label = POSITIVE_LABEL
-		else:
-			label = NEGATIVE_LABEL
-		testOutput[counter] = {
-		"positive": actualPos,
-		"negative": actualNeg,
-		"label":label
-		}
-		counter+=1
-	return testOutput
+	try:
+		testOutput = {}
+		counter=0
+		for row in testData:
+			actualPos = 0
+			actualNeg = 0
+			# pass through the dictionary
+			for key in vocabDict:
+				label = None
+				if key in row[0]:
+					positiveProb= vocabDict[key]["positiveProb"]
+					actualPos += math.log10(positiveProb)
+					negativeProb = vocabDict[key]["negativeProb"]
+					actualNeg += math.log10(negativeProb)
+				elif B_ALGORITHM in algorithm:
+					nPositiveProb = vocabDict[key]["nPositiveProb"]
+					actualPos += math.log10(nPositiveProb)
+					nNegativeProb = vocabDict[key]["nNegativeProb"]
+					actualNeg += math.log10(nNegativeProb)
+			# handling new words
+			if B_ALGORITHM in algorithm:
+				for word in row[0]:
+					if word not in vocabDict:
+						positiveProb = float(1)/(positiveCount+featureSize)
+						actualPos+=math.log10(positiveProb)
+						negativeProb = float(1)/(negativeCount+featureSize)
+						actualNeg+=math.log10(negativeProb)
+			actualPos+=math.log10(positivePrior)
+			actualNeg+=math.log10(negativePrior)
+			if(actualPos>actualNeg):
+				label = POSITIVE_LABEL
+			else:
+				label = NEGATIVE_LABEL
+			testOutput[counter] = {
+			"positive": actualPos,
+			"negative": actualNeg,
+			"label":label
+			}
+			counter+=1
+		return testOutput
+	except:
+		print(DISTRIBUTION_INVALID)
 
 def formConfusionMatrix(testData, predictedValues):
 	confusionDict = initializeConfusionDict()

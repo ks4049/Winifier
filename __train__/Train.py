@@ -39,7 +39,6 @@ def beginTrainingProcess(trainingData, algorithm):
         wordDict = makeDict(trainingData, vocabList)
         print ("Vocabulary List Size: "+str(len(vocabList)))
         wordDict = computeProbability(wordDict, positiveCount, negativeCount, len(vocabList), algorithm)
-        print(TRAINING_SUCCESS_MESSAGE)
         return wordDict, positiveProb, negativeProb, len(vocabList), positiveCount, negativeCount
     except:
         print(TRAINING_ERROR_MESSAGE)
