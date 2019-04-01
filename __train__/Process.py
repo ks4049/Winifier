@@ -103,18 +103,12 @@ def createModel(algorithm, trainType, wordDict, splitFold, datasetSize):
         }
         if trainType==PS_TRAIN_TYPE:
             modelDictionary["percentageSplit"]=str(splitFold)
-            modelDictionary["vocabSize"]=str(len(wordDict)),
-
+            modelDictionary["vocabSize"]=str(len(wordDict))
         else:
-            modelDictionary["numberOfFolds"] = str(splitFold).encode('UTF-8')
+            modelDictionary["numberOfFolds"] = str(splitFold)
         modelDictionary["probability"]=str(wordDict)
         with open("./__model__/generated/"+str(algorithm)+"__"+str(trainType)+"__"+str(splitFold)+".json","w") as file:
-            file.write(json.dumps(modelDictionary))
-        with open("./__model__/generated/"+str(algorithm)+"__"+str(trainType)+"__"+str(splitFold)+".json","r") as file:
-            probabilities = yaml.load(json.loads(file.read())["probability"], Loader=yaml.Loader)
-            print(probabilities)
-            print(type(probabilities))
-
+            json.dump(modelDictionary,file)
         print(MODEL_CREATED_MESSAGE)
     except Exception as e:
         traceback.print_exc()
