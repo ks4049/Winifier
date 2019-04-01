@@ -48,7 +48,7 @@ def __init__(params):
     # Setup testing options
     elif process == PROCESS_TEST:
             # Load data from filePath provided
-            if loadTestData(filePath):
+            if loadTestData(filePath, dataSetLimit):
                 '''
                 Load existing model file to test against.
                 Model contains all parameters including

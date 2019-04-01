@@ -29,10 +29,13 @@ def load(filePath, limit, delimiter="~"):
         print (TRAIN_DATA_LOAD_ERROR_MESSAGE)
         return False, None
 
-def loadTestData(filePath, delimiter="~"):
+def loadTestData(filePath, limit, delimiter="~"):
     print (LOADING_DATASET_MESSAGE)
     try:
-        testDataset = GFT(filePath,delimiter=delimiter,dtype='<S')
+        if limit == -1:
+            testDataset = GFT(filePath,delimiter=delimiter,dtype='<S')
+        else:
+            testDataset = GFT(filePath,delimiter=delimiter,dtype='<S', max_rows=limit)
         print (LOADING_DATASET_SUCCESSFUL_MESSAGE)
         print (str(len(testDataset))+" Records Loaded")
         return True
