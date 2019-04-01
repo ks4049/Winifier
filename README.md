@@ -55,7 +55,7 @@ A text classifier for wine reviews crawled from http://winemag.com.
   ```
   python3 Winifier.py "train" "__data__/trainingV2.txt" 11110 "multinomial" "cross_validation" 10
   ```
-  ### Model Files are generated after each train command runs in the __model__/generated directory. 
+  ### Model Files are generated after each train command runs in the __model__/generated directory.
 
   #### Commands to custom test with a dataFile and modelFile:  
   #### This is under development, currently we have the option only to train and evaluate at run time! We plan to deliver this option through the next checkpoint
@@ -66,3 +66,12 @@ A text classifier for wine reviews crawled from http://winemag.com.
   ```
   python3 Winifier.py "test" "__data__/trainingV2.txt" 1110 "__model__/generated/multinomial__percentage_split__90.json"
   ```
+
+  Link to repository: https://github.com/nirbhayph/Winifier.git
+  You can visit this link to see updated readMe file if you wish to.
+
+  Regards
+  Khavya Seshadri
+  Dhiren Chandnani
+  Nirbhay Pherwani
+  Team #4
