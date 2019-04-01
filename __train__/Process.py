@@ -6,7 +6,6 @@ from Train import *
 sys.path.insert(0, './__test__')
 from Test import *
 import traceback
-import yaml
 
 def createTrainingCV(lower, higher, totalSize, descriptionList, pointsList, labelList):
     trainingData = []
