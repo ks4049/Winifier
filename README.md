@@ -25,7 +25,7 @@ A text classifier for wine reviews crawled from http://winemag.com.
   
   `algorithm (whether "bernoulli"/"multinomial")`
   
-  `trainType (whether "percentage_split"/"cross_validation")`
+  `type (whether "percentage_split"/"cross_validation")`
   
   `trainPercentage (if "percentage_split" selected)`
   
@@ -37,7 +37,7 @@ A text classifier for wine reviews crawled from http://winemag.com.
 
   ##### Command format:
   ```
-  <python3 Winifier.py "train" "filePath" datasetLimit "algorithm" "trainType" "trainPercentage/numberOfFolds">
+  <python3 Winifier.py "train" "filePath" datasetLimit "algorithm" "type" "trainPercentage/numberOfFolds">
   ```
   ##### Sample commands to try out:
   ```
