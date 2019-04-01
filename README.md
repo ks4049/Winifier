@@ -17,7 +17,7 @@ A text classifier for wine reviews crawled from http://winemag.com.
   ```
   Now that the requirements are satisfied you can use the following options to run the program for training:
 
-  `process (whether "train"/"test")``
+  `process (whether "train"/"test")`
   `filePath for training (path to dataset, "txt file delimited with ~")`
   `modelFilePath for testing with custom dataset (path to dataset, "txt file delimited with ~")`
   `algorithm (whether "bernoulli"/"multinomial")`
