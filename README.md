@@ -57,7 +57,7 @@ A text classifier for wine reviews crawled from http://winemag.com.
   ```
 
   #### Commands to custom test with a dataFile and modelFile:  
-  ---- This is under development, currently we have the option only to train and evaluate at run time! We plan to deliver this option through the next checkpoint ----
+  ## This is under development, currently we have the option only to train and evaluate at run time! We plan to deliver this option through the next checkpoint
   ```
   <python3 Winifier.py "test" "filePath" datasetLimit "modelFilePath">
   ```
