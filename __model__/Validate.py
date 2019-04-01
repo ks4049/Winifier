@@ -8,7 +8,7 @@ def modelParser(model):
 	data = None
 	try:
 		data = model
-		
+
 		algorithm = str(data["algorithm"])
 		if algorithm == B_ALGORITHM:
 			pass
@@ -31,7 +31,7 @@ def modelParser(model):
 		else:
 			print(MODEL_PARSE_ERROR_MESSAGE)
 			return False
-		
+
 		trainType = str(data["trainType"])
 		if trainType == PS_TRAIN_TYPE:
 			percentageSplit = int(str(data["percentageSplit"]))
@@ -47,7 +47,7 @@ def modelParser(model):
 			else:
 				print(MODEL_PARSE_ERROR_MESSAGE)
 				return False
-		
+
 		wordDict = data["probability"]
 
 		if not wordDict:

@@ -5,6 +5,8 @@ sys.path.insert(0, './__train__')
 from Train import *
 sys.path.insert(0, './__test__')
 from Test import *
+import traceback
+import yaml
 
 def createTrainingCV(lower, higher, totalSize, descriptionList, pointsList, labelList):
     trainingData = []
@@ -104,10 +106,16 @@ def createModel(algorithm, trainType, wordDict, splitFold, datasetSize):
             modelDictionary["vocabSize"]=str(len(wordDict)),
 
         else:
-            modelDictionary["numberOfFolds"] = str(splitFold)
+            modelDictionary["numberOfFolds"] = str(splitFold).encode('UTF-8')
         modelDictionary["probability"]=str(wordDict)
         with open("./__model__/generated/"+str(algorithm)+"__"+str(trainType)+"__"+str(splitFold)+".json","w") as file:
-            json.dump(modelDictionary, file)
+            file.write(json.dumps(modelDictionary))
+        with open("./__model__/generated/"+str(algorithm)+"__"+str(trainType)+"__"+str(splitFold)+".json","r") as file:
+            probabilities = yaml.load(json.loads(file.read())["probability"], Loader=yaml.Loader)
+            print(probabilities)
+            print(type(probabilities))
+
         print(MODEL_CREATED_MESSAGE)
-    except:
+    except Exception as e:
+        traceback.print_exc()
         print(MODEL_NOT_CREATED_MESSAGE)
