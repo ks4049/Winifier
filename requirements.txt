@@ -1,0 +1,4 @@
+six
+bs4
+numpy
+nltk

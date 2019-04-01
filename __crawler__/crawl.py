@@ -5,7 +5,6 @@ import math
 import json
 import traceback
 
-
 if sys.version[0] == '2':
     reload(sys)
     sys.setdefaultencoding("utf-8")
@@ -43,8 +42,8 @@ item = 0
 for category in categories:
     if category['value']:
         categories_list.append(category.text)
-category_lower_limit = 4
-category_upper_limit = 9
+category_lower_limit = -1
+category_upper_limit = 15
 
 try:
     for category in categories_list:
