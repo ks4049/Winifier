@@ -70,8 +70,8 @@ A text classifier for wine reviews crawled from http://winemag.com.
   Link to repository: https://github.com/nirbhayph/Winifier.git
   You can visit this link to see updated readMe file if you wish to.
 
-  Regards
-  Khavya Seshadri
-  Dhiren Chandnani
-  Nirbhay Pherwani
-  Team #5
+  ##### Regards
+  ##### Khavya Seshadri
+  ##### Dhiren Chandnani
+  ##### Nirbhay Pherwani
+  ##### Team #5
