@@ -9,7 +9,7 @@ A text classifier for wine reviews crawled from http://winemag.com.
   1: Cross Validation
   2: Percentage Split
 
-### Steps to run: (If you are on a Unix / Mac System)
+### Steps to run: 
   ```
   git clone https://github.com/nirbhayph/Winifier.git
   cd Winifier
@@ -18,19 +18,19 @@ A text classifier for wine reviews crawled from http://winemag.com.
   Now that the requirements are satisfied you can use the following options to run the program for training:
 
   `process (whether "train"/"test")`
-  
+
   `filePath for training (path to dataset, "txt file delimited with ~")`
-  
+
   `modelFilePath for testing with custom dataset (path to dataset, "txt file delimited with ~")`
-  
+
   `algorithm (whether "bernoulli"/"multinomial")`
-  
+
   `type (whether "percentage_split"/"cross_validation")`
-  
+
   `trainPercentage (if "percentage_split" selected)`
-  
+
   `numberOfFolds (if "cross_validation" selected)`
-  
+
   `datasetLimit (number of rows to select from dataset)`
 
   #### Commands to train on dataset and evaluate on remaining subset of data:
