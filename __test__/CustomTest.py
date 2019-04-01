@@ -4,7 +4,8 @@ from Test import *
 
 def cross_validation(folds, testingData, vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm):
     _slice_ = 1
-    for (_slice_ in folds):
+    for (_slice_ in range (1, folds+1):
+        print("---------------"+str(_slice_)+"----------------")
         predictedValues = evaluate(testingData, vocabDict, positiveProb, negativeProb, positiveCount, negativeCount, featureSize, algorithm)
         totalAccuracy += formConfusionMatrix(testingData, predictedValues)
         _slice_ += 1
