@@ -15,7 +15,7 @@ A text classifier for wine reviews crawled from http://winemag.com.
   cd Winifier
   pip3 install -r requirements.txt
   ```
-  Now that the requirements are satisfied you can use the following options to run the program for training:
+  Now that the requirements are satisfied you can use the following options to run the program:
 
   `process (whether "train"/"test")`
 
@@ -69,9 +69,8 @@ A text classifier for wine reviews crawled from http://winemag.com.
 
   Link to repository: https://github.com/nirbhayph/Winifier.git
   You can visit this link to see updated readMe file if you wish to.
-
-  ##### Regards
-  ##### Khavya Seshadri
-  ##### Dhiren Chandnani
-  ##### Nirbhay Pherwani
-  ##### Team #5
+  
+  @Authors (Team #5)
+  `Khavya Seshadri - Dhiren Chandnani - Nirbhay Pherwani`
+  `   @ks4049           @dhirensc          @nirbhayph   `
+ 
