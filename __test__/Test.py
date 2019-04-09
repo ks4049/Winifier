@@ -23,14 +23,13 @@ def evaluate(testData, vocabDict, positivePrior, negativePrior, positiveCount, n
 					actualPos += math.log10(nPositiveProb)
 					nNegativeProb = vocabDict[key]["nNegativeProb"]
 					actualNeg += math.log10(nNegativeProb)
-			# handling new words
-			if B_ALGORITHM in algorithm:
-				for word in row[0]:
-					if word not in vocabDict:
-						positiveProb = float(1)/(positiveCount+featureSize)
-						actualPos+=math.log10(positiveProb)
-						negativeProb = float(1)/(negativeCount+featureSize)
-						actualNeg+=math.log10(negativeProb)
+			# handling new words			
+			for word in row[0]:
+				if word not in vocabDict:
+					positiveProb = float(1)/(positiveCount+featureSize)
+					actualPos+=math.log10(positiveProb)
+					negativeProb = float(1)/(negativeCount+featureSize)
+					actualNeg+=math.log10(negativeProb)
 			actualPos+=math.log10(positivePrior)
 			actualNeg+=math.log10(negativePrior)
 			if(actualPos>actualNeg):

@@ -1,5 +1,6 @@
 import json
 import sys, traceback
+import yaml
 sys.path.insert(0, './__util__')
 from Constants import *
 
@@ -9,53 +10,54 @@ def modelParser(model):
 	try:
 		data = model
 
-		algorithm = str(data["algorithm"])
+		algorithm = data["algorithm"]
 		if algorithm == B_ALGORITHM:
 			pass
 		elif algorithm == M_ALGORITHM:
 			pass
 		else:
 			print(MODEL_PARSE_ERROR_MESSAGE)
-			return False
-
-		vocabSize = int(data["vocabSize"][0])
-		if vocabSize > 0:
-			pass
-		else:
-			print(MODEL_PARSE_ERROR_MESSAGE)
-			return False
+			return False, None
+		trainType = str(data["trainType"])
+		if trainType == PS_TRAIN_TYPE:
+			percentageSplit = int(data["percentageSplit"])
+			if ((percentageSplit > 0) and (percentageSplit < 100)):
+				pass
+			else:
+				print(MODEL_PARSE_ERROR_MESSAGE)
+				return False, None
+		elif trainType == CV_TRAIN_TYPE:
+			numOfFolds = int(data["numberOfFolds"])
+			if numOfFolds > 0:
+				pass
+			else:
+				print(MODEL_PARSE_ERROR_MESSAGE)
+				return False, None
+		if trainType==PS_TRAIN_TYPE:		
+			vocabSize = int(data["vocabSize"])
+			if vocabSize > 0:
+				pass	
+			else:	
+				print(MODEL_PARSE_ERROR_MESSAGE)
+				return False, None
 
 		trainDatasetSize = int(data["trainDatasetSize"])
 		if trainDatasetSize > 0:
 			pass
 		else:
 			print(MODEL_PARSE_ERROR_MESSAGE)
-			return False
+			return False, None
 
-		trainType = str(data["trainType"])
-		if trainType == PS_TRAIN_TYPE:
-			percentageSplit = int(str(data["percentageSplit"]))
-			if ((percentageSplit > 0) and (percentageSplit < 100)):
-				pass
-			else:
-				print(MODEL_PARSE_ERROR_MESSAGE)
-				return False
-		elif trainType == CV_TRAIN_TYPE:
-			numOfFolds = int(str(data["numOfFolds"]))
-			if numOfFolds > 0:
-				pass
-			else:
-				print(MODEL_PARSE_ERROR_MESSAGE)
-				return False
-
-		wordDict = data["probability"]
+		
+		wordDict = yaml.load(data["probability"])		
 
 		if not wordDict:
 			print(MODEL_PARSE_ERROR_MESSAGE)
-			return False
+			return False, None
 
 		print(MODEL_PARSE_SUCCESS_MESSAGE)
-		return True
-	except:
+		return True, algorithm
+	except Exception as e:
+		print(e)
 		print(MODEL_PARSE_ERROR_MESSAGE)
 		return False
