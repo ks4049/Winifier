@@ -36,27 +36,32 @@ def loadTestData(filePath, limit, delimiter="~"):
             testDataset = GFT(filePath,delimiter=delimiter,dtype='<S')
         else:
             testDataset = GFT(filePath,delimiter=delimiter,dtype='<S', max_rows=limit)
+        for item in range(0,limit):
+            if testDataset[item,1].item().decode()!="???":
+                testDataset[item,1].item().decode()    
         print (LOADING_DATASET_SUCCESSFUL_MESSAGE)
         print (str(len(testDataset))+" Records Loaded")
-        return True
+        return True, testDataset
     except:
         print (TEST_DATA_LOAD_ERROR_MESSAGE)
-        return False
+        return False, None
 
 def loadModel(filePath):
     print (LOADING_MODEL_MESSAGE)
     try:
         with open(filePath, "r") as modelData:
             model = json.load(modelData)
-            if modelParser(model):
+            check, algorithm = modelParser(model)
+            if check:
                 print (LOADING_MODEL_SUCCESSFUL_MESSAGE)
-                return True
+                return True, model, algorithm                
             else:
                 print (MODEL_LOAD_ERROR_MESSAGE)
-                return False
-    except:
+                return False, None, None
+    except Exception as e:
+        print(e)
         print (MODEL_LOAD_ERROR_MESSAGE)
-        return False
+        return False, None, None
 
 def loadStopWords(filePath):
     print(LOADING_STOPWORDS_MESSAGE)

@@ -5,6 +5,8 @@ from __preprocess__.Preprocess import preprocess
 from __train__.Bernoulli import initialize as B
 from __train__.Multinomial import initialize as M
 import datetime
+from __train__.Process import processModelData
+from __train__.Process import makeTestData
 
 def __init__(params):
     process = params[1]
@@ -14,7 +16,7 @@ def __init__(params):
     testPercentage=None
     numberOfFolds=None
     algorithmCheck = 0
-
+    testData=None
     # Setup training options
     if process == PROCESS_TRAIN:
         algorithm = params[4]
@@ -48,19 +50,32 @@ def __init__(params):
     # Setup testing options
     elif process == PROCESS_TEST:
             # Load data from filePath provided
-            if loadTestData(filePath, dataSetLimit):
+            check, testData = loadTestData(filePath, dataSetLimit)
+            if check:
                 '''
                 Load existing model file to test against.
                 Model contains all parameters including
                 algorithm (B/M) used to build model,
                 and all supporting calculated probabilities.
                 '''
+
                 modelFilePath = params[4]
-                if loadModel(modelFilePath):
+                checkModel, modelData, algorithm = loadModel(modelFilePath)
+                if checkModel:
                     '''
                     Run test data against model and evaluate results
-                    '''
-                    pass
+                    '''                    
+                    preProcessCheck, pureTokens, pointsList, labelList = preprocess(testData, algorithm)                                                                                            
+                    if(preProcessCheck):
+                        #print("testdatalen "+str(len(pureTokens)))                        
+                        testData = makeTestData(pureTokens, pointsList, labelList) 
+                        check = processModelData(modelData, testData)
+                        if check:
+                            print(MODEL_EVALUATION_SUCCESS_MESSAGE)
+                        else:
+                            print(MODEL_EVALUATION_ERROR_MESSAGE) 
+                    else:
+                        print(PREPROCESS_ERROR_MESSAGE)                               
 
 startTime = datetime.datetime.now()
 __init__(sys.argv)
