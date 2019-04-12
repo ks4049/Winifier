@@ -4,6 +4,7 @@ sys.path.insert(0, './__util__')
 from Constants import *
 
 def evaluate(testData, vocabDict, positivePrior, negativePrior, positiveCount, negativeCount, featureSize, algorithm):
+	message=""
 	try:
 		testOutput = {}
 		counter=0
@@ -42,9 +43,13 @@ def evaluate(testData, vocabDict, positivePrior, negativePrior, positiveCount, n
 			"label":label
 			}
 			counter+=1
-		return testOutput
+		print(EVALUATION_TEST_DATA_SUCESS)
+		message+=EVALUATION_TEST_DATA_SUCESS+'\n'	
+		return testOutput, message
 	except:
+		message+=DISTRIBUTION_INVALID+'\n'
 		print(DISTRIBUTION_INVALID)
+		return None, message
 
 def formConfusionMatrix(testData, predictedValues):
 	confusionDict = initializeConfusionDict()
@@ -61,7 +66,7 @@ def formConfusionMatrix(testData, predictedValues):
 			else:
 				confusionDict["false"]["negative"]+=1
 	print (confusionDict)
-	return float(confusionDict["true"]["positive"]+confusionDict["true"]["negative"])/(confusionDict["true"]["positive"]+confusionDict["true"]["negative"]+confusionDict["false"]["positive"]+confusionDict["false"]["negative"])
+	return float(confusionDict["true"]["positive"]+confusionDict["true"]["negative"])/(confusionDict["true"]["positive"]+confusionDict["true"]["negative"]+confusionDict["false"]["positive"]+confusionDict["false"]["negative"]), confusionDict
 
 def initializeConfusionDict():
 	confusionDict = {"true": {"positive":0, "negative":0}, "false": {"positive":0, "negative":0}}
