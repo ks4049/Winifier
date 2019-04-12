@@ -25,24 +25,30 @@ def Fraction(num, den):
 		return 1,1
 
 def beginTrainingProcess(trainingData, algorithm):
-    try:
-        print (BEGIN_TRAINING_MESSAGE)
-        vocabList, positiveCount, negativeCount = makeVocabList(trainingData)
-        positiveProb, negativeProb = getLabelProbability(positiveCount, negativeCount) #prior probabilities
-        if algorithm == M_ALGORITHM:
-            positiveCount,negativeCount=0,0
-            for row in trainingData:
-                if row[2] == POSITIVE_LABEL:
-                    positiveCount+=len(row[0])
-                else:
-                    negativeCount+=len(row[0])
-        wordDict = makeDict(trainingData, vocabList)
-        print ("Vocabulary List Size: "+str(len(vocabList)))
-        wordDict = computeProbability(wordDict, positiveCount, negativeCount, len(vocabList), algorithm)
-        return wordDict, positiveProb, negativeProb, len(vocabList), positiveCount, negativeCount
-    except:
-        print(TRAINING_ERROR_MESSAGE)
-        return None, None, None, None, None, None
+	message=""
+	output=""
+	try:
+		message+=BEGIN_TRAINING_MESSAGE+'\n'
+		print (BEGIN_TRAINING_MESSAGE)
+		vocabList, positiveCount, negativeCount = makeVocabList(trainingData)
+		positiveProb, negativeProb = getLabelProbability(positiveCount, negativeCount) #prior probabilities
+		if algorithm == M_ALGORITHM:
+			positiveCount,negativeCount=0,0
+			for row in trainingData:
+				if row[2] == POSITIVE_LABEL:
+					positiveCount+=len(row[0])
+				else:
+					negativeCount+=len(row[0])
+		output+="Vocabulary\n"+str(vocabList)+'\n'
+		wordDict = makeDict(trainingData, vocabList)
+		message+="Vocabulary List Size: "+str(len(vocabList))+'\n'
+		print ("Vocabulary List Size: "+str(len(vocabList)))
+		wordDict = computeProbability(wordDict, positiveCount, negativeCount, len(vocabList), algorithm)
+		return wordDict, positiveProb, negativeProb, len(vocabList), positiveCount, negativeCount, message, output
+	except:
+		message+=TRAINING_ERROR_MESSAGE+'\n'
+		print(TRAINING_ERROR_MESSAGE)
+		return None, None, None, None, None, None, message, output
 
 def computeProbability(wordDict, positiveCount, negativeCount, featureSize, algorithm):
 	for key in wordDict:
